@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import axios from "axios";
 import { db } from "../db/connection.js";
 
 
@@ -12,7 +13,11 @@ export const registerUser = async (req, res) => {
     }
 
     // check user exists
-    const [existing] = await db.execute("SELECT * FROM users WHERE email = ?", [email]);
+    const [existing] = await db.execute(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
+
     if (existing.length > 0) {
       return res.status(409).json({ message: "User already exists" });
     }
@@ -21,18 +26,31 @@ export const registerUser = async (req, res) => {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // insert user
+    // insert into Server 1 DB
     await db.execute(
       "INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)",
       [name, email, phone, hashedPassword]
     );
 
+    // 🔁 SYNC TO SERVER 2
+    await axios.post("http://localhost:5001/users/sync", {
+      name,
+      email,
+      phone,
+      password: hashedPassword,
+      source:"server1"   
+     });
+
+    console.log("User synced to Server 2");
+
     res.status(201).json({ message: "User registered successfully" });
+
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "DB Error" });
   }
 };
+
 
 
 //User login
@@ -68,29 +86,34 @@ export const loginUser = async (req, res) => {
   }
 };
 
-
-// Get user by id
-export const getUserById = async (req, res) => {
+//Create a sync controller in Server
+export const syncUserFromServer2 = async (req, res) => {
   try {
-    const userId = req.params.id;
+    const { name, email, phone, password } = req.body;
 
-    const [data] = await db.execute(
-      "SELECT * FROM users WHERE user_id = ?",
-      [userId]
+    // check if user already exists
+    const [existing] = await db.execute(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
     );
 
-    if (data.length === 0) {
-      return res.status(404).json({
-        message: "User not found"
-      });
+    if (existing.length > 0) {
+      return res.status(200).json({ message: "User already synced" });
     }
 
-    res.status(200).json(data[0]);
+    // password is already hashed ❗
+    await db.execute(
+      "INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)",
+      [name, email, phone, password]
+    );
+
+    console.log("✅ User synced FROM Server 2 → Server 1");
+
+    res.status(201).json({ message: "User synced successfully" });
   } catch (err) {
     console.log(err);
-    res.status(500).json({
-      message: "DB Error"
-    });
+    res.status(500).json({ message: "Sync failed" });
   }
 };
+
 
