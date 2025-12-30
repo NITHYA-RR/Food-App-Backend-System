@@ -18,6 +18,8 @@
   "homepage": "https://github.com/NITHYA-RR/Food-App-Backend-System#readme",
   "description": "",
   "dependencies": {
-    "jsonwebtoken": "^9.0.3"
+    "axios": "^1.13.2",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.0.2"
   }
 }

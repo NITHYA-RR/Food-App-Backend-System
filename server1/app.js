@@ -3,6 +3,8 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import userRoutes from "./src/routes/userRoutes.js";
+import productRoutes from "./src/routes/productRoutes.js"
+
 
 //configure environment variables
 dotenv.config();
@@ -16,6 +18,7 @@ app.use(express.json());
 
 //Routes
 app.use("/users", userRoutes);
+app.use("/products", productRoutes)
 
 //start Server
 const PORT = process.env.PORT || 5000;

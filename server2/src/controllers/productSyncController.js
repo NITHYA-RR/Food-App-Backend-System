@@ -1,4 +1,5 @@
 import { db } from "../db/connection.js";
+import { upload } from "../../../shared/upload.js";
 import {
     createProductsService,
     getProductsService,
@@ -7,7 +8,7 @@ import {
 } from "../../../shared/productService.js";
 
 // Target server for bi-directional sync
-const TARGET_SERVER = "http://localhost:5001"; // On Server1
+const TARGET_SERVER = "http://localhost:5000"; // On Server1
 // const TARGET_SERVER = "http://localhost:5000"; // On Server2
 
 // CREATE PRODUCT
@@ -62,8 +63,14 @@ export const updateProduct = async (req, res) => {
 };
 
 
+
 // export const updateProduct = async (req, res) => {
 //     try {
+//         const image = req.file ? req.file.filename : null;
+//         const data = {
+//             ...req.body,
+//             image
+//         };
 //         await updateProductsService(db, req.params.id, req.body, TARGET_SERVER);
 //         res.json({ message: "Product updated" });
 //     } catch (err) {
