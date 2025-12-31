@@ -23,9 +23,7 @@ router.put(
   updateProduct
 );
 
-// Use upload.single('image') to handle single file named 'image'
-router.post("/", authMiddleware, upload.single("image"), createProduct);
-router.put("/", authMiddleware, upload.single("image"), updateProduct);
+
 
 // ================== SERVER-TO-SERVER SYNC ==================
 router.post("/sync", async (req, res) => {
@@ -41,14 +39,14 @@ router.post("/sync", async (req, res) => {
         res.status(201).json({ message: "Product synced successfully" });
     } catch (err) {
         console.log("Product sync error:", err.message);
-        res.status(500).json({ message: "Sync failed" });
+        res.status(500).json({ message: "Sync failedssss" });
     }
 });
 
 // ================== USER CRUD ==================
-router.post("/", authMiddleware, createProduct);
+router.post("/", authMiddleware, upload.single("image"), createProduct);
+router.put("/", authMiddleware, upload.single("image"), updateProduct);
 router.get("/", authMiddleware, getProducts);
-router.put("/:id", authMiddleware, updateProduct);
 router.delete("/:id", authMiddleware, deleteProduct);
 
 export default router;

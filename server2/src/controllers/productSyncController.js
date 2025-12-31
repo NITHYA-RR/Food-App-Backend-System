@@ -9,7 +9,6 @@ import {
 
 // Target server for bi-directional sync
 const TARGET_SERVER = "http://localhost:5000"; // On Server1
-// const TARGET_SERVER = "http://localhost:5000"; // On Server2
 
 // CREATE PRODUCT
 export const createProduct = async (req, res) => {
@@ -61,22 +60,6 @@ export const updateProduct = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
-
-
-
-// export const updateProduct = async (req, res) => {
-//     try {
-//         const image = req.file ? req.file.filename : null;
-//         const data = {
-//             ...req.body,
-//             image
-//         };
-//         await updateProductsService(db, req.params.id, req.body, TARGET_SERVER);
-//         res.json({ message: "Product updated" });
-//     } catch (err) {
-//         res.status(400).json({ message: err.message });
-//     }
-// };
 
 // DELETE PRODUCT
 export const deleteProduct = async (req, res) => {

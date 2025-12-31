@@ -10,10 +10,11 @@ export const validationProduct = ({ name , price }) => {
 
 //=======================Product Sync================================
 export const syncProduct = async (targetServer, data) => {
+    console.log(targetServer, data,"DATA");
     try {
         await axios.post(`${targetServer}/products/sync`, data);
         console.log("Product synced");
     } catch (err) {
-        console.log("Sync failed:", err.message);
+        console.log("Sync failedS:", err.message);
     }
 };
