@@ -11,28 +11,31 @@ import { authMiddleware } from "../../../shared/authMiddleware.js";
 import { db } from "../db/connection.js";
 import {
     createProductsService,
-    deleteProductsService
+    deleteProductsService,
+    updateProductsService
 } from "../../../shared/productService.js";
 
 const router = express.Router();
+router.get("/:id", authMiddleware, getProducts);
 
 router.put(
-  "/:id",
-  authMiddleware,
-  upload.single("image"),   // ⭐ MUST
-  updateProduct
+    "/:id",
+    authMiddleware,
+    upload.single("image"),   // ⭐ MUST
+    updateProduct
 );
 
 
 // ================== SERVER-TO-SERVER SYNC ==================
 router.post("/sync", async (req, res) => {
     try {
-        const { product_id, name, price, description, image, stock, action} = req.body;
+        const { product_id, name, price, description, image, stock, action } = req.body;
 
         if (action === "delete") {
             await deleteProductsService(db, product_id); // only DB delete
         } else {
-            await createProductsService(db, { name, price, description, image, stock ,action}, ""); // no further sync
+            await updateProductsService(db, product_id, { name, price, description, image, stock, action }, "http://localhost:5000")
+
         }
 
         res.status(201).json({ message: "Product synced successfully" });
@@ -44,8 +47,6 @@ router.post("/sync", async (req, res) => {
 
 // ================== USER CRUD ==================
 router.post("/", authMiddleware, upload.single("image"), createProduct);
-router.get("/", authMiddleware, upload.single("image"),getProducts);
-router.put("/:id", authMiddleware, updateProduct);
 router.delete("/:id", authMiddleware, deleteProduct);
 
 export default router;

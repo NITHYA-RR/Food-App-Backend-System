@@ -13,6 +13,9 @@ const TARGET_SERVER = "http://localhost:5001"; // On Server1
 export const createProduct = async (req, res) => {
     try {
         const productData = req.body;
+
+        console.log(productData ,'This is the product data.')
+
          if (req.file) {
             productData.image = req.file.filename;
         }
@@ -25,8 +28,11 @@ export const createProduct = async (req, res) => {
 
 // GET PRODUCTS (protected route, only for authenticated users)
 export const getProducts = async (req, res) => {
+
+  const id = req.params;
+
     try {
-        const products = await getProductsService(db);
+        const products = await getProductsService(db , id?.id);
         res.json(products);
     } catch (err) {
         res.status(500).json({ message: err.message });

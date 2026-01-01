@@ -11,7 +11,8 @@ import { authMiddleware } from "../../../shared/authMiddleware.js";
 import { db } from "../db/connection.js";
 import {
     createProductsService,
-    deleteProductsService
+    deleteProductsService,
+    updateProductsService
 } from "../../../shared/productService.js";
 
 const router = express.Router();
@@ -33,7 +34,7 @@ router.post("/sync", async (req, res) => {
         if (action === "delete") {
             await deleteProductsService(db, product_id); // only DB delete
         } else {
-            await createProductsService(db, { name, price, description, image, stock,action }, ""); // no further sync
+            await updateProductsService(db , product_id , {name, price, description, image, stock,action} , "http://localhost:5000")
         }
 
         res.status(201).json({ message: "Product synced successfully" });
@@ -45,7 +46,6 @@ router.post("/sync", async (req, res) => {
 
 // ================== USER CRUD ==================
 router.post("/", authMiddleware, upload.single("image"), createProduct);
-router.put("/", authMiddleware, upload.single("image"), updateProduct);
 router.get("/", authMiddleware, getProducts);
 router.delete("/:id", authMiddleware, deleteProduct);
 

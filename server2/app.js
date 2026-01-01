@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 //import routes
 import userRoutes from "./src/routes/userRoutes.js";
 import productRoutes from "./src/routes/productSyncRoutes.js";
+import orderRoutes from "./src/routes/orderRoutes.js"
+
 dotenv.config();
 
 //create app instance
@@ -16,6 +18,8 @@ app.use(express.json());
 app.use("/users",userRoutes)
 app.use("/products", productRoutes)
 app.use("/uploads", express.static("uploads"));
+app.use('/orders' , orderRoutes)
+
 
 //Start server
 const PORT = process.env.PORT || 5001;
