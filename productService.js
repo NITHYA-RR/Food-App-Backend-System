@@ -1,4 +1,4 @@
-import { validationProduct, syncProduct } from "./productHelpers.js";
+import { validationProduct, syncProduct } from "./shared/productHelpers.js";
 
 export const createProductsService = async (db, data, targetServer) => {
   const error = validationProduct(data);
